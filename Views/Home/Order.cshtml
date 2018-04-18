@@ -1,0 +1,35 @@
+<div>
+    @model ECommerce.Models.Order
+
+</div>
+<div id="header">
+    <a href="dashboard">Dashboard</a>
+    <a href="products">Products</a>
+    <a href="orders">Orders</a>
+    <a href="customers">Customers</a>
+    <a href="settings">Settings</a>
+</div>
+<h1>Add a new Customer</h1>
+<form asp-controller="Home" asp-action="NewOrder" method="post">
+    <span asp-validation-for="CustomerId"></span>
+    <label asp-for="CustomerId">Customer </label>
+    <select>
+        @{
+            foreach(Customer customer in ViewBag.customers)
+            {
+                <option value="@customer.CustomerId">@customer.Name</option>
+            }
+        }
+    </select>
+    <select name="Product" id="product">
+        @{
+            foreach(Product product in ViewBag.products)
+            {
+                <option value="@product.ProductId">@product.ProductName</option>
+            }
+        }
+    </select>
+    <input type="text" name="Quantity" id="Quantity">
+    
+    <button type="submit">Add</button>
+</form>
