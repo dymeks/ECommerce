@@ -14,6 +14,7 @@ namespace ECommerce.Models
         public string ProductName { get; set; }
 
         [Required]
+        [DataType(DataType.ImageUrl)]
         public string ImageUrl { get; set; }
 
         [Required]

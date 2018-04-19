@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using ECommerce.Models;
+using Microsoft.AspNetCore.Antiforgery;
 
 namespace ECommerce.Controllers
 {
@@ -27,6 +28,7 @@ namespace ECommerce.Controllers
 
         [HttpPost]
         [Route("add_customer")]
+        [ValidateAntiForgeryToken]
         public IActionResult AddCustomer(Customer customer)
         {
             if(ModelState.IsValid){
@@ -47,6 +49,16 @@ namespace ECommerce.Controllers
         }
 
         [HttpGet]
+        [Route("remove/{CustomerId}")]
+        public IActionResult RemoveCustomer(int CustomerId)
+        {
+            Customer RetrievedCustomer = _context.customers.SingleOrDefault(customer => customer.CustomerId == CustomerId);
+            _context.customers.Remove(RetrievedCustomer);
+            _context.SaveChanges();
+            return Redirect("/customers");
+        }
+
+        [HttpGet]
         [Route("orders")]
         public IActionResult DisplayOrders()
         {
@@ -61,14 +73,60 @@ namespace ECommerce.Controllers
 
         [HttpPost]
         [Route("new_order")]
-        public IActionResult NewOrder(Order order)
+        [ValidateAntiForgeryToken]
+        public IActionResult NewOrder(int customerId, int ProductId, int Quantity)
+        {
+            Product orderProduct = _context.products.SingleOrDefault(product => product.ProductId == ProductId);
+             
+            if(orderProduct.ProductQuantity >= Quantity)
+            {
+                
+                orderProduct.ProductQuantity = orderProduct.ProductQuantity - Quantity;
+                if(orderProduct.ProductQuantity < 0)
+                {
+                    ViewBag.error = "There are not enough products to meet the demand.";
+                    return View("Order");
+                } else {
+                    Order order = new Order()
+                    {
+                        Quantity = Quantity,
+                        Date = DateTime.Now,
+                        CustomerId = customerId,
+                        ProductId = ProductId
+                    };
+                    _context.orders.Add(order);
+                    _context.SaveChanges();
+                }
+                
+                return Redirect("/orders");
+            }
+        
+            ViewBag.error = "Can't order more items then are currently availible.";
+            return View("Order");
+        }
+
+        [HttpGet]
+        [Route("products")]
+        public IActionResult DisplayProducts()
+        {
+            List<Product> AllProducts = _context.products.ToList();
+            ViewBag.products = AllProducts;
+            return View("Product");
+        }
+        
+        [HttpPost]
+        [Route("add_product")]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddProduct(Product product)
         {
             if(ModelState.IsValid)
             {
-                
+                _context.Add(product);
+                _context.SaveChanges();
+                return Redirect("/products");
             }
-            return View();
+
+            return View("Product");
         }
-        
     }
 }

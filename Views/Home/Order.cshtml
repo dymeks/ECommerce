@@ -3,25 +3,31 @@
 
 </div>
 <div id="header">
-    <a href="dashboard">Dashboard</a>
-    <a href="products">Products</a>
-    <a href="orders">Orders</a>
-    <a href="customers">Customers</a>
-    <a href="settings">Settings</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/products">Products</a>
+    <a href="/orders">Orders</a>
+    <a href="/customers">Customers</a>
+    <a href="/settings">Settings</a>
 </div>
-<h1>Add a new Customer</h1>
-<form asp-controller="Home" asp-action="NewOrder" method="post">
-    <span asp-validation-for="CustomerId"></span>
-    <label asp-for="CustomerId">Customer </label>
-    <select>
+<h1>Add a new Order</h1>
+<form action="new_order" method="post">
+    @Html.AntiForgeryToken()
+    <div>
+        @ViewBag.error
+    </div>
+    <label> Customer </label>
+    <select name="customerId">
         @{
             foreach(Customer customer in ViewBag.customers)
             {
                 <option value="@customer.CustomerId">@customer.Name</option>
             }
         }
-    </select>
-    <select name="Product" id="product">
+    </select> <br>
+    <label for="Quantity">Order: </label>
+    <input type="text" name="Quantity" id="Quantity">
+    <label for="product">Product </label>
+    <select name="ProductId" id="product">
         @{
             foreach(Product product in ViewBag.products)
             {
@@ -29,7 +35,31 @@
             }
         }
     </select>
-    <input type="text" name="Quantity" id="Quantity">
+    
     
     <button type="submit">Add</button>
 </form>
+<div>
+    <table id="display_products">
+        <thead>
+            <th id="col1">Customer Name</th>
+            <th id="col2">Product</th>
+            <th id="col3">Quantity</th>
+            <th id="col4">Date</th>
+        </thead>
+        <tbody>
+            @{
+                foreach(Order order in ViewBag.orders)
+                {
+                    <tr>
+                        @{ var date = ((DateTime)order.Date).Date;}
+                        <td id ="row1">@order.Customer.Name</td>
+                        <td id ="row2">@order.Product.ProductName</td>
+                        <td id= "row3">@order.Quantity</td>
+                        <td id="row4">@date</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

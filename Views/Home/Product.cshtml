@@ -1,0 +1,57 @@
+<div>
+    @model ECommerce.Models.Product
+
+</div>
+<div id="header">
+    <a href="dashboard">Dashboard</a>
+    <a href="products">Products</a>
+    <a href="orders">Orders</a>
+    <a href="customers">Customers</a>
+    <a href="settings">Settings</a>
+</div>
+<div class="leftbox">
+    <div class="search">
+        <form action="/search" method="post">
+            <input type="search" name="filter" id="filter">
+            <button type="submit">Filter</button>
+        </form>
+        <div>
+            <h1>Add a new product</h1>
+            <form asp-controller="Home" asp-action="AddProduct" method="post">
+                @Html.AntiForgeryToken()
+                <span  asp-validation-for="ProductName"></span>
+                <label asp-for="ProductName">Name:</label>
+                <input type="text" id="ProductName" name="ProductName"> <br>
+                <span  asp-validation-for="ImageUrl"></span>
+                <label for="ImageUrl">Image (url):</label> <br>
+                <input type="text" name="ImageUrl" id="ImageUrl"> <br>
+                <span  asp-validation-for="Description"></span>
+                <label for="Description">Description:</label>
+                <textarea name="Description" id="Description" cols="30" rows="10">
+
+                </textarea> <br>
+                <span  asp-validation-for="ProductQuantity"></span>
+                <label for="ProductQuantity">Initial Quantity</label>
+                <input type="text" id="ProductQuantity" name="ProductQuantity">
+                <button type="submit">Create</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="main">
+    @{
+        @if(ViewBag.products != null)
+        {
+            @foreach(Product product in ViewBag.products)
+            {
+                <div class="product_image">
+                    <img class="image" src="@product.ImageUrl" alt="@product.ProductName">
+                    <p>@product.ProductName</p>
+                    <p>(@product.ProductQuantity left)</p>
+                </div>
+            }
+        }
+        
+    }
+    
+</div>

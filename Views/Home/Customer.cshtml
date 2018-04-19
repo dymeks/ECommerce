@@ -9,10 +9,35 @@
     <a href="customers">Customers</a>
     <a href="settings">Settings</a>
 </div>
-<h1>Add a new Customer</h1>
-<form asp-controller="Home" asp-action="AddCustomer" method="post">
-    <span asp-validation-for="Name"></span>
-    <label asp-for="Name"></label>
-    <input asp-for="Name" type="text">
-    <button type="submit">Add</button>
-</form>
+<div>
+    <h1>Add a new Customer</h1>
+    <form asp-controller="Home" asp-action="AddCustomer" method="post">
+        @Html.AntiForgeryToken()
+        <span asp-validation-for="Name"></span>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" type="text">
+        <button type="submit">Add</button>
+    </form>
+</div>
+
+<div>
+    <table id="display_products">
+        <thead>
+            <th id="col1">Customer Name</th>
+            <th id="col2">Created Date</th>
+            <th id="col3">Actions</th>
+        </thead>
+        <tbody>
+            @{
+                foreach(Customer customer in ViewBag.customers)
+                {
+                    <tr>
+                        <td id ="row1">@customer.Name</td>
+                        <td id ="row2">@customer.createdAt.Date</td>
+                        <td id= "row3"><a href="remove/@customer.CustomerId">Remove</a></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>        
+</div>

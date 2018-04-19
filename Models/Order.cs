@@ -10,7 +10,6 @@ namespace ECommerce.Models
         public int OrderId { get; set; }
 
         [Required]
-        [DataType(DataType.Integer)]
         public int Quantity { get; set; }
 
         [Required]
